@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# script for creating a note and open it in emacs
+# needs the NOTES_DIRECTORY env var set up
+# usage: `cn Meeting With Garry"
+
+# replace whitespace with underscore
+TITLE_UNDERSCORES=`echo $@ | tr '[:blank:]' '_'`
+
+# replace uppercase with lowercase
+TITLE_LOWERCASE=`echo $TITLE_UNDERSCORES | tr '[:upper:]' '[:lower:]'`
+
+DATE=`date +%Y-%m-%d`
+
+FILEPATH="${NOTES_DIRECTORY}/${DATE}_${TITLE_LOWERCASE}.txt"
+
+echo "creating note at $FILEPATH and opening emacs..."
+
+emacsclient "$FILEPATH" || emacs "$FILEPATH" &
