@@ -10,9 +10,10 @@
 
 (desktop-save-mode 1)
 
-(require 'helm-config)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (require 'helm-config)
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
 (helm-mode 1)
 
 (custom-set-variables
@@ -20,10 +21,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(csv-separators (quote ("," "	" "|")))
  '(custom-enabled-themes (quote (misterioso)))
  '(package-selected-packages
    (quote
-    (markdown-mode ensime yaml-mode web-mode js2-refactor helm-ls-git autopair auto-complete))))
+    (elpy haskell-mode intero find-file-in-project rubocop csv-mode json-mode company flycheck tide ac-js2 rjsx-mode js2-mode markdown-mode ensime yaml-mode helm-ls-git autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -46,8 +48,6 @@
 
 (global-set-key "\M-;" 'comment-dwim-line)
 
-;; (js2-mode 1)
-
 (autoload 'js2-mode "js2" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
@@ -56,10 +56,6 @@
 (add-hook 'js2-mode-hook 'ac-js2-mode)
 
 (setq-default js2-basic-offset 2)
-
-;; (setq ac-js2-evaluate-calls t)
-
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict") 
 
 ;;; yasnippet
 ;;; should be loaded before auto complete so that they can work together
@@ -115,7 +111,7 @@
 (require 'midnight)
 
 (require 'helm-ls-git)
-(global-set-key (kbd "C-c C-g") 'helm-ls-git-ls)
+(global-set-key (kbd "C-x C-d") 'helm-browse-project)
 
 (add-hook 'ruby-mode-hook #'rubocop-mode)
 
@@ -135,17 +131,50 @@
 
 (setq js-indent-level 2)
 
-
-
-(global-set-key [M-up] (lambda () (interactive) (scroll-down 1)))
-(global-set-key [M-down] (lambda () (interactive) (scroll-up 1)))
-
 (setq-default word-wrap t)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 
 (set-face-attribute 'default nil :family "Inconsolata" :height 140)
-;; (set-face-attribute 'default nil :family "Anonymous Pro" :height 140)
 
 (server-start)
+
+;; use web-mode for .jsx files
+(add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
+
+;; http://www.flycheck.org/manual/latest/index.html
+(require 'flycheck)
+
+;; turn on flychecking globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers
+                      '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'rjsx-mode)
+
+;; customize flycheck temp file prefix
+(setq-default flycheck-temp-prefix ".flycheck")
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers
+                      '(json-jsonlist)))
+
+;; ;; https://github.com/purcell/exec-path-from-shell
+;; ;; only need exec-path-from-shell on OSX
+;; ;; this hopefully sets up path and other vars better
+;; (when (memq window-system '(mac ns))
+;;   (exec-path-from-shell-initialize))
+
+(use-package elpy
+             :ensure t
+             :init
+             (elpy-enable))
+
+(global-set-key [C-prior] (lambda () (interactive) (scroll-down 1)))
+(global-set-key [C-next] (lambda () (interactive) (scroll-up 1)))
