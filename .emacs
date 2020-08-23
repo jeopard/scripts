@@ -23,9 +23,12 @@
  ;; If there is more than one, they won't work right.
  '(csv-separators (quote ("," "	" "|")))
  '(custom-enabled-themes (quote (misterioso)))
+ '(custom-safe-themes
+   (quote
+    ("a41b81af6336bd822137d4341f7e16495a49b06c180d6a6417bf9fd1001b6d2b" default)))
  '(package-selected-packages
    (quote
-    (elpy haskell-mode intero find-file-in-project rubocop csv-mode json-mode company flycheck tide ac-js2 rjsx-mode js2-mode markdown-mode ensime yaml-mode helm-ls-git autopair auto-complete))))
+    (terraform-mode slim-mode dracula-theme elpy haskell-mode intero find-file-in-project rubocop csv-mode json-mode company flycheck tide ac-js2 rjsx-mode js2-mode markdown-mode ensime yaml-mode helm-ls-git autopair auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -171,6 +174,8 @@
 ;; (when (memq window-system '(mac ns))
 ;;   (exec-path-from-shell-initialize))
 
+(require 'use-package)
+
 (use-package elpy
              :ensure t
              :init
@@ -178,3 +183,5 @@
 
 (global-set-key [C-prior] (lambda () (interactive) (scroll-down 1)))
 (global-set-key [C-next] (lambda () (interactive) (scroll-up 1)))
+
+(setq-default typescript-indent-level 2)
