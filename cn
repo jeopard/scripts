@@ -16,4 +16,6 @@ FILEPATH="${NOTES_DIRECTORY}/${DATE}_${TITLE_LOWERCASE}.txt"
 
 echo "creating note at $FILEPATH and opening emacs..."
 
-emacsclient "$FILEPATH" || emacs "$FILEPATH" &
+# -n means don't wait for the server to respond and
+# emacs won't ask for confirmation to close because of lingering clients
+emacsclient -n "$FILEPATH" || emacs "$FILEPATH" &
